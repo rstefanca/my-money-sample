@@ -1,22 +1,20 @@
 package cz.codingmonkey.domain;
 
-import java.math.BigDecimal;
-
 /**
  * @author rstefanca
  */
 public class Asset extends Interest {
 
-	public Asset(String name, BigDecimal amount) {
+	public Asset(String name, MoneyAmount amount) {
 		super(name, amount);
 	}
 
-	public Asset(String test, BigDecimal ten, ValidityInterval validityInterval) {
+	public Asset(String test, MoneyAmount ten, ValidityInterval validityInterval) {
 		super(test, ten, validityInterval);
 	}
 
-	public final BigDecimal getValue() {
-		return amount;
+	public final MoneyAmount getRealValue() {
+		return moneyAmount;
 	}
 
 	@Override
@@ -24,7 +22,7 @@ public class Asset extends Interest {
 		return "Asset{" +
 				"name='" + name + '\'' +
 				", validityInterval=" + validityInterval +
-				", amount=" + amount +
+				", moneyAmount=" + moneyAmount +
 				'}';
 	}
 

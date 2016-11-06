@@ -12,10 +12,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class InterestCollectionTest {
 
+	private static final MoneyAmount TEN = new MoneyAmount(BigDecimal.TEN, "CZK");
+
 	@Test
 	public void sumShouldBeZero() {
-		Liability liability = new Liability("test", BigDecimal.TEN);
-		Asset asset = new Asset("test", BigDecimal.TEN);
+		Liability liability = new Liability("test", TEN);
+		Asset asset = new Asset("test", TEN);
 
 		InterestCollection collection = new InterestCollection(Arrays.asList(
 				liability,

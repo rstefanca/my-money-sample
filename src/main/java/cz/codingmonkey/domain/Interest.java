@@ -16,28 +16,19 @@ public abstract class Interest {
 
 	protected final ValidityInterval validityInterval;
 
-	final BigDecimal amount;
+	final MoneyAmount moneyAmount;
 
-	Interest(String name, BigDecimal amount) {
-		this(name, amount, new ValidityInterval(new Date()));
+	Interest(String name, MoneyAmount moneyAmount) {
+		this(name, moneyAmount, new ValidityInterval(new Date()));
 	}
 
-	Interest(String name, BigDecimal amount, ValidityInterval validityInterval) {
+	Interest(String name, MoneyAmount moneyAmount, ValidityInterval validityInterval) {
 		this.name = requireNonNull(name, "name");
-		if (requireNonNull(amount, "amount").compareTo(BigDecimal.ZERO) <= 0) {
-			throw new IllegalArgumentException("An amount must be positive value greater than zero. Was " + amount);
+		if (requireNonNull(moneyAmount, "moneyAmount").getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+			throw new IllegalArgumentException("An moneyAmount must be positive value greater than zero. Was " + moneyAmount);
 		}
-		this.amount = amount;
+		this.moneyAmount = moneyAmount;
 		this.validityInterval = requireNonNull(validityInterval, "validityInterval");
-	}
-
-	@Override
-	public String toString() {
-		return "Interest{" +
-				"name='" + name + '\'' +
-				", validityInterval=" + validityInterval +
-				", amount=" + amount +
-				'}';
 	}
 
 	public String getName() {
@@ -48,13 +39,27 @@ public abstract class Interest {
 		return validityInterval;
 	}
 
-	public BigDecimal getAmount() {
-		return amount;
+	public MoneyAmount getMoneyAmount() {
+		return moneyAmount;
 	}
 
 	final boolean isValidInYearMonth(YearMonth yearMonth) {
 		return validityInterval.isValidInYearMonth(yearMonth);
 	}
 
-	public abstract BigDecimal getValue();
+	@Override
+	public String toString() {
+		return "Interest{" +
+				"name='" + name + '\'' +
+				", validityInterval=" + validityInterval +
+				", moneyAmount=" + moneyAmount +
+				'}';
+	}
+
+	/**
+	 * Returns real value of the interest
+	 *
+	 * @return real value of the interest
+	 */
+	public abstract MoneyAmount getRealValue();
 }

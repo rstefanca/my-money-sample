@@ -6,8 +6,6 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static java.math.BigDecimal.TEN;
-import static java.math.BigDecimal.ZERO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -19,6 +17,8 @@ public class InterestTest {
 
 	private static final String ANY_NAME = "name";
 	private static final Date NOW = new Date();
+	private static final MoneyAmount TEN = new MoneyAmount(BigDecimal.TEN, "CZK");
+	private static final MoneyAmount ZERO = new MoneyAmount(BigDecimal.ZERO, "CZK");
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldNotAllowNegativeValues() {
@@ -50,7 +50,7 @@ public class InterestTest {
 		ValidityInterval expectedValidityInterval = ValidityInterval.fromDate(NOW);
 		TestedInterest testedInterest = new TestedInterest(ANY_NAME, TEN, expectedValidityInterval);
 		assertEquals(ANY_NAME, testedInterest.getName());
-		assertEquals(TEN, testedInterest.getAmount());
+		assertEquals(TEN, testedInterest.getMoneyAmount());
 		assertEquals(expectedValidityInterval, testedInterest.getValidityInterval());
 	}
 
@@ -67,11 +67,11 @@ public class InterestTest {
 
 	private class TestedInterest extends Interest {
 
-		TestedInterest(String name, BigDecimal amount, ValidityInterval validityInterval) {
+		TestedInterest(String name, MoneyAmount amount, ValidityInterval validityInterval) {
 			super(name, amount, validityInterval);
 		}
 
-		public BigDecimal getValue() {
+		public MoneyAmount getRealValue() {
 			return null;
 		}
 	}

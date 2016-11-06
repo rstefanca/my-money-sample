@@ -1,22 +1,20 @@
 package cz.codingmonkey.domain;
 
-import java.math.BigDecimal;
-
 /**
  * @author rstefanca
  */
 public class Liability extends Interest {
 
-	public Liability(String name, BigDecimal amount) {
+	public Liability(String name, MoneyAmount amount) {
 		super(name, amount);
 	}
 
-	public Liability(String name, BigDecimal amount, ValidityInterval validityInterval) {
+	public Liability(String name, MoneyAmount amount, ValidityInterval validityInterval) {
 		super(name, amount, validityInterval);
 	}
 
-	public final BigDecimal getValue() {
-		return amount.negate();
+	public final MoneyAmount getRealValue() {
+		return moneyAmount.negate();
 	}
 
 	@Override
@@ -24,7 +22,7 @@ public class Liability extends Interest {
 		return "Liability{" +
 				"name='" + name + '\'' +
 				", validityInterval=" + validityInterval +
-				", amount=" + amount +
+				", moneyAmount=" + moneyAmount +
 				'}';
 	}
 }

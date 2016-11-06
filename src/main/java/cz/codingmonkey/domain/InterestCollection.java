@@ -21,7 +21,7 @@ class InterestCollection {
 		BigDecimal sum = BigDecimal.ZERO;
 
 		for (Interest interest : interests) {
-			sum = sum.add(interest.getValue());
+			sum = sum.add(interest.getRealValue().getAmount());
 		}
 
 		return sum;

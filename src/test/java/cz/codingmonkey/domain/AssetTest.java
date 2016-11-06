@@ -11,9 +11,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class AssetTest {
 
+	private static final MoneyAmount TEN = new MoneyAmount(BigDecimal.TEN, "CZK");
+
 	@Test
 	public void valueShouldBePositive() throws Exception {
-		Asset asset = new Asset("name", BigDecimal.TEN);
-		assertEquals(BigDecimal.TEN, asset.getValue());
+		Asset asset = new Asset("name", TEN);
+		assertEquals(TEN, asset.getRealValue());
 	}
 }

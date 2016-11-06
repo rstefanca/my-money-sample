@@ -11,10 +11,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class LiabilityTest {
 
+	private static final MoneyAmount TEN = new MoneyAmount(BigDecimal.TEN, "CZK");
+
 	@Test
 	public void valueShouldBeNegative() {
-		Liability liability = new Liability("liability", BigDecimal.TEN);
-		assertEquals(BigDecimal.TEN.negate(), liability.getValue());
+		Liability liability = new Liability("liability", TEN);
+		assertEquals(new MoneyAmount(BigDecimal.TEN.negate(), "CZK"), liability.getRealValue());
 	}
 
 }
