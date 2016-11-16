@@ -1,6 +1,7 @@
 package cz.codingmonkey;
 
 import cz.codingmonkey.domain.*;
+import org.joda.time.Period;
 import org.joda.time.YearMonth;
 
 import java.math.BigDecimal;
@@ -11,7 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static cz.codingmonkey.domain.InterestSummary.*;
+import static cz.codingmonkey.domain.InterestSummary.forYearMonth;
+import static java.util.stream.Collectors.*;
 
 /**
  * @author rstefanca
@@ -38,7 +40,7 @@ public class App {
 	private static InterestSummary addInterestToSummary(List<Interest> interests, InterestSummary interestSummary) {
 		List<Interest> added = interests.stream()
 				.filter(interestSummary::addInterestMatchingYearMonth)
-				.collect(Collectors.toList());
+				.collect(toList());
 		interests.removeAll(added);
 		return interestSummary;
 	}
@@ -56,13 +58,13 @@ public class App {
 		List<Interest> interests = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			BigDecimal amount = BigDecimal.valueOf(-1000 + random.nextInt(2000));
-			Interest interest = interestFactory("interest" + i, YearMonth.now().plusMonths(-random.nextInt(13)), amount);
+			Interest interest = createInterest("interest" + i, YearMonth.now().plusMonths(-random.nextInt(13)), amount);
 			interests.add(interest);
 		}
 		return interests;
 	}
 
-	public static Interest interestFactory(String name, YearMonth yearMonth, BigDecimal amount) {
+	public static Interest createInterest(String name, YearMonth yearMonth, BigDecimal amount) {
 		return amount.compareTo(BigDecimal.ZERO) < 0 ?
 				new Liability(name, new MoneyAmount(amount.abs(), "CZK"), ValidityInterval.fromYearMonth(yearMonth)) :
 				new Asset(name, new MoneyAmount(amount.add(BigDecimal.ONE), "CZK"), ValidityInterval.fromYearMonth(yearMonth));

@@ -1,46 +1,37 @@
 package cz.codingmonkey.domain;
 
+import lombok.Getter;
+import lombok.NonNull;
+import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author rstefanca
  */
 public abstract class Interest {
 
+	@Getter
 	protected final String name;
 
+	@Getter
 	protected final ValidityInterval validityInterval;
 
+	@Getter
 	final MoneyAmount moneyAmount;
 
 	Interest(String name, MoneyAmount moneyAmount) {
-		this(name, moneyAmount, new ValidityInterval(new Date()));
+		this(name, moneyAmount, new ValidityInterval(LocalDate.now()));
 	}
 
-	Interest(String name, MoneyAmount moneyAmount, ValidityInterval validityInterval) {
-		this.name = requireNonNull(name, "name");
-		if (requireNonNull(moneyAmount, "moneyAmount").getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+	Interest(@NonNull String name,@NonNull MoneyAmount moneyAmount,@NonNull ValidityInterval validityInterval) {
+		this.name = name;
+		if (moneyAmount.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
 			throw new IllegalArgumentException("An moneyAmount must be positive value greater than zero. Was " + moneyAmount);
 		}
 		this.moneyAmount = moneyAmount;
-		this.validityInterval = requireNonNull(validityInterval, "validityInterval");
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public ValidityInterval getValidityInterval() {
-		return validityInterval;
-	}
-
-	public MoneyAmount getMoneyAmount() {
-		return moneyAmount;
+		this.validityInterval = validityInterval;
 	}
 
 	final boolean isValidInYearMonth(YearMonth yearMonth) {

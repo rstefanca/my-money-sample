@@ -1,37 +1,33 @@
 package cz.codingmonkey.domain;
 
+import lombok.NonNull;
+import lombok.Value;
+import lombok.experimental.NonFinal;
+import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
 import java.util.Date;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * @author rstefanca
  */
+@Value
+@NonFinal
 public class ValidityInterval {
 
-	private final Date from;
-	private final Date to;
+	private LocalDate from;
+	private LocalDate to;
 
-	ValidityInterval(Date from) {
+	ValidityInterval(LocalDate from) {
 		this(from, null);
 	}
 
-	ValidityInterval(Date from, Date to) {
-		this.from = requireNonNull(from, "from");
+	ValidityInterval(@NonNull LocalDate from, LocalDate to) {
+		this.from = from;
 		this.to = to;
-		if (to != null && to.before(from)) {
+		if (to != null && to.isBefore(from)) {
 			throw new IllegalArgumentException("to must not be before from");
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "ValidityInterval{" +
-				"from=" + from +
-				", to=" + to +
-				'}';
 	}
 
 	public static ValidityInterval fromYearMonth(YearMonth yearMonth) {
@@ -42,31 +38,34 @@ public class ValidityInterval {
 	}
 
 	public static ValidityInterval fromDate(Date from) {
-		return new ValidityInterval(from);
+		return new ValidityInterval(new LocalDate(from));
 	}
 
-	public static ValidityInterval closed(Date from, Date to) {
-		return new ValidityInterval(from, requireNonNull(to, "to"));
+	public static ValidityInterval closed(@NonNull  Date from, @NonNull Date to) {
+		return new ValidityInterval(new LocalDate(from), new LocalDate(to));
 	}
 
-	boolean isValidInYearMonth(YearMonth yearMonth) {
-		Date parameterLastDay = lastDayOfYearMonth(yearMonth);
-		if (parameterLastDay.before(from)) {
+	boolean isValidInYearMonth(@NonNull YearMonth yearMonth) {
+
+		LocalDate parameterLastDay = lastDayOfYearMonth(yearMonth);
+		if (parameterLastDay.isBefore(from)) {
 			return false;
 		}
 
-		Date parameterFirstDay = firstDayOfYearMonth(yearMonth);
+		LocalDate parameterFirstDay = firstDayOfYearMonth(yearMonth);
 
-		return !(to != null && parameterFirstDay.after(to));
+		return !(to != null && parameterFirstDay.isAfter(to));
 	}
 
-	private static Date firstDayOfYearMonth(YearMonth yearMonth) {
-		requireNonNull(yearMonth, "yearMonth");
-		return yearMonth.toLocalDate(1).toDate();
+	private static LocalDate firstDayOfYearMonth(YearMonth yearMonth) {
+		return yearMonth.toLocalDate(1);
 	}
 
-	private static Date lastDayOfYearMonth(YearMonth yearMonth) {
-		requireNonNull(yearMonth, "yearMonth");
-		return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue().toDate();
+	private static LocalDate lastDayOfYearMonth(YearMonth yearMonth) {
+		return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue();
+	}
+
+	public static ValidityInterval fromDate(LocalDate now) {
+		return new ValidityInterval(now);
 	}
 }

@@ -2,6 +2,7 @@ package cz.codingmonkey.domain;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 import org.junit.Test;
 
@@ -16,11 +17,11 @@ import static org.junit.Assert.assertTrue;
  */
 public class ValidityIntervalTest {
 
-	private static final Date NOW = new Date();
+	private static final LocalDate NOW = LocalDate.now();
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldNotAllowToBeforeFrom() {
-		new ValidityInterval(DateUtils.addDays(NOW, 1), NOW);
+		new ValidityInterval(NOW.plusDays(1), NOW);
 	}
 
 	@Test
@@ -39,8 +40,8 @@ public class ValidityIntervalTest {
 
 	@Test
 	public void shouldNotBeValidWhenBefore() {
-		ValidityInterval validityInterval = new ValidityInterval(DateTime.now().withTimeAtStartOfDay().toDate());
-		YearMonth before = YearMonth.fromDateFields(DateUtils.addMonths(NOW, -1));
+		ValidityInterval validityInterval = new ValidityInterval(LocalDate.now());
+		YearMonth before = YearMonth.now().plusMonths(-1);
 
 		assertFalse(validityInterval.isValidInYearMonth(before));
 	}
@@ -52,11 +53,11 @@ public class ValidityIntervalTest {
 		assertFalse(validityInterval.isValidInYearMonth(after));
 	}
 
-
-
 	@Test
 	public void yearMonthWithin() {
-		ValidityInterval validityInterval = new ValidityInterval(DateUtils.truncate(NOW, Calendar.YEAR), DateUtils.ceiling(NOW, Calendar.YEAR));
+		ValidityInterval validityInterval = ValidityInterval.closed(
+				DateUtils.truncate(NOW.toDate(), Calendar.YEAR),
+				DateUtils.ceiling(NOW.toDate(), Calendar.YEAR));
 		YearMonth actual = YearMonth.now();
 
 		assertTrue(validityInterval.isValidInYearMonth(actual));
